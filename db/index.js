@@ -219,7 +219,6 @@ async function updateUser(id, fields = {}) {
 
   async function addTagsToPost(postId, tagList) {
     try {
-        console.log(tagList)
       const createPostTagPromises = tagList.map(
         tag => createPostTag(postId, tag.id)
       );
@@ -252,10 +251,8 @@ async function updateUser(id, fields = {}) {
         FROM users
         WHERE id=$1;
       `, [post.authorId])
-        console.log(tags, "this is the tags")
       post.tags = tags;
       post.author = author;
-      console.log(post, "this is post")
   
       delete post.authorId;
   
@@ -283,6 +280,19 @@ async function updateUser(id, fields = {}) {
     }
   } 
 
+  async function getAllTags() {
+    try {
+      const { rows } = await client.query(`
+        SELECT * 
+        FROM tags;
+      `);
+  
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   module.exports = {  
     client,
     createUser,
@@ -297,5 +307,6 @@ async function updateUser(id, fields = {}) {
     createTags,
     addTagsToPost,
     getPostById,
-    getPostsByTagName
+    getPostsByTagName,
+    getAllTags
   }
